@@ -1,0 +1,17 @@
+<html>
+  <head>
+    {% if title %}
+    <title>{{ title }} - My Library</title>
+    {% else %}
+    <title>My Book Library</title>
+    {% endif %}
+  </head>
+  <body>
+      <div>
+          <a href="/library">Library</a>
+          Sort by:
+      </div>
+      <hr>
+      {% block content %}{% endblock %}
+  </body>
+</html>
