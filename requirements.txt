@@ -1,0 +1,7 @@
+Flask == 0.10.1
+Flask_Login == 0.3.2
+flask_marshmallow == 0.6.2
+pandas == 0.18.1
+SQLAlchemy == 1.0.12
+WTForms == 2.1
+sqlalchemy_migrate == 0.10.0
