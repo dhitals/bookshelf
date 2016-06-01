@@ -1,4 +1,5 @@
 #!/Users/saurav/Envs/flask/bin/python
+
 from app import app, views
 import sys
 from config import SQLALCHEMY_DATABASE_URI
@@ -16,10 +17,10 @@ if __name__ == "__main__":
         
     elif "seeddb" in sys.argv:
         with app.app_context():
-            b1 = Book(ISBN="1", Title= "Lord of the Rings", Author= "Tolkien, J. R. R.")            
+            b1 = Book(ISBN="1", Title="Lord of the Rings", Author="Tolkien, J. R. R.")
             db.session.add_all([b1])
             db.session.commit()
         print("Database seeded!")
-        
-    else:            
+
+    else:
         app.run(debug=True)

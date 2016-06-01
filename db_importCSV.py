@@ -5,7 +5,6 @@ def db_importCSV(fname):
     df = pd.read_csv(fname)
 
     # modify the df so that datatypes are as desired 
-    df = df.drop(['Location', 'Price', 'Comment', 'Loan/Borrow'], 1)
     df.ISBN = df.ISBN.fillna(0).astype(int)
     df.Status = df.Status.fillna('0') # Owned, Wanted, Loaned
     df.Read = df.Read.fillna(0).astype('bool')
@@ -15,6 +14,13 @@ def db_importCSV(fname):
     df['CoverImage'] = ''
     df['Collection'] = ''
     df['LentOutTo']  = ''
+    
+    # split author Name into first, last names
+    df['Author_firstName'] = df.Author.str.split(',').str[1]
+    df['Author_lastName'] = df.Author.str.split(',').str[0]
+
+    # drop unneccesarry cols
+    df = df.drop(['Location', 'Price', 'Comment', 'Loan/Borrow', 'Author'], 1)
 
     # rearrange a couple of the columns
     cols = df.columns.tolist()

@@ -1,26 +1,27 @@
-<html>
-  <head>
-    {% if title %}
-    <title>{{ title }} - My Library</title>
-    {% else %}
-    <title>My Book Library</title>
-    {% endif %}
-  </head>
-  <body>
+{% extends "base.html" %}
+{% block content %}
     <table border="10">
         <tr>
             <th>ISBN</th>
             <th>Title</th>
             <th>Author</th>
+            <th>Genre</th>
+            <th>Read</th>
         </tr>
         
-        {% for book in books %}
+        {% set sort_on = request.args.sort_on | default('Author_lastName') %}
+        {% for book in books | sort(attribute=sort_on) %}
         <tr>
             <td>{{ book.ISBN }}</td>
             <td>{{ book.Title }}</td>
-            <td>{{ book.Author }}</td>
+            <td><a href="by-author/{{ book.Author_lastName }}">
+                {{ book.Author_firstName }} <b>{{ book.Author_lastName }}</b></a>
+            </td>
+            <td><a href="by-genre/{{ book.Genre }}">
+                {{ book.Genre }}</a>
+            </td>
+            <td>{{ book.Read }}</td>
         </tr>
         {% endfor %}
       </table>
-  </body>
-</html>
+{% endblock %}
