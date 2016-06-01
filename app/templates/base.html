@@ -1,26 +1,35 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    {% block head %}
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
     {% if title %}
-    <title>{{ title }} - My Library</title>
+    <title>{% block title %}{% endblock %} - My Library</title>
     {% else %}
     <title>My Book Library</title>
     {% endif %}
+    {% endblock %}
   </head>
   <body>
-      <div>
-          <a href="/library">Library</a>
-          Sort by:
-      </div>
-      <hr>
-      {% with messages = get_flashed_messages() %}
-          {% if messages %}
-              <ul>
-              {% for message in messages %}
-                <li>{{ message }} </li>
-              {% endfor %}
-              </ul>
-          {% endif %}
-      {% endwith %}
-      {% block content %}{% endblock %}
+    <div class="menu" id="menu">
+      <ul>
+        <li><a href="/library">Library</a> </li>
+        <li>Sort by:</li>
+        <li><a href="/by-title">Title</a></li>
+	<li><a href="/by-author">Author</a></li>
+	<li><a href="/by-genre">Genre</a></li>
+      </ul>
+    </div>          
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li>{{ message }} </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <div id="content">{% block content %}{% endblock %}</div>
   </body>
 </html>
