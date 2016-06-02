@@ -3,7 +3,7 @@ from flask_login import LoginManager, current_user, login_required
 from sqlalchemy import func
 
 from app import app
-from models import db, Book
+from models import db, Book, NewBook
 from schemas import ma, user_schema, book_schema, books_schema
 from .forms import LoginForm
 
@@ -14,12 +14,27 @@ from .forms import LoginForm
 @app.route('/library')
 def view_library():
     res = Book.query.order_by(Book.Author_lastName, Book.Author_firstName, Book.Title).all()
-    return(render_template('eachBook.html', books=res, sort_on='Title'))
-
-@app.route("/library/<isbn>")
-def view_book(isbn):
-    res = Book.query.get_or_404(isbn)
     return(render_template('eachBook.html', books=res))
+
+@app.route('/library/by-title/')
+def view_byTitle():   
+    res = Book.query.order_by(Book.Title, Book.Author_lastName, Book.Author_firstName).all()
+    return(render_template('eachBook.html', books=res))
+
+@app.route('/library/by-author/')
+def view_byAuthor():   
+    res = Book.query.order_by(Book.Author_lastName, Book.Author_firstName, Book.Title).all()
+    return(render_template('eachBook.html', books=res))
+
+@app.route('/library/by-genre/')
+def view_byGenre():   
+    res = Book.query.order_by(Book.Genre, Book.Title, Book.Author_lastName, Book.Author_firstName).all()
+    return(render_template('eachBook.html', books=res))
+
+@app.route('/library/by-read/')
+def view_byRead():   
+    res = Book.query.order_by(Book.Read, Book.Title, Book.Author_lastName, Book.Author_firstName).all()
+    return(render_template('eachBook.html', books=res, sort_on='Title'))
 
 #-------------------------------------------------------------------------
 # Search by different fields
@@ -47,7 +62,24 @@ def searchByRead(query):
 #-------------------------------------------------------------------------
 # Create / delete / edit entries
 #-------------------------------------------------------------------------
-@app.route("/library/add", methods=["POST"])
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = NewBook(request.form)
+    if request.method == 'POST' and form.validate():
+        book = Book(ISBN = form.ISBN.data,
+                    Title = form.Title.data,
+                    Author_lastName = form.Author_lastName.data)
+
+        db.session.add(book)
+        db.session.commit()
+            
+        flash('%s by %s Added' %(form.Title.data, form.Author_lastName.data))
+        return redirect(url_for('view_library'))
+        
+    return(render_template('register.html', form=form))
+
+
+@app.route('/add', methods=['GET', 'POST'])
 def create_book():
     
     book, errors = book_schema.load(request.form)
@@ -55,12 +87,16 @@ def create_book():
         resp = jsonify(errors)
         resp.status_code = 400
         return(resp)
+
+    if request.method == 'POST' and form.validate():
+           book= Book()
     
     db.session.add(book)
     db.session.commit()
-    
-    resp = jsonify({"message": "Book Added"})
-    resp.status_code = 201
+
+    flash('Book Added')
+    #resp = jsonify({"message": "Book Added"})
+    #resp.status_code = 201
     #resp.headers["Location"] = book.url
     return(resp)
 

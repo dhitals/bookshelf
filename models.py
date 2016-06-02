@@ -1,6 +1,7 @@
 from app import db
 from sqlalchemy.orm import class_mapper, ColumnProperty
 from flask_login import UserMixin
+from wtforms import Form, BooleanField, StringField, validators
 
 # create a Book subclass
 class Book(db.Model):
@@ -10,6 +11,8 @@ class Book(db.Model):
     Title = db.Column(db.String(64), nullable=False) 
     Author_lastName = db.Column(db.String(32), nullable=False)
     Author_firstName = db.Column(db.String(32), nullable=True) 
+    Original_Language = db.Column(db.String(32), nullable=True)
+    Translator = db.Column(db.String(32), nullable=True)
     Series = db.Column(db.String(32), nullable=True) 
     SeriesIndex = db.Column(db.SmallInteger, nullable=True) 
     Genre = db.Column(db.String(16), nullable=True) 
@@ -35,3 +38,9 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(64), nullable=True)
     password = db.Column(db.String(64), nullable=True)
     #api_key = db.Column(db.String(64), unique=True, index=True)
+
+class NewBook(Form):
+    ISBN = StringField('ISBN', [validators.Length(min=13, max=13, message='ISBN must be 13 digits long.')])
+    Title = StringField('Title', [validators.Length(min=2)])
+    Author_lastName = StringField('Author_lastName', [validators.Length(min=2)]) 
+
