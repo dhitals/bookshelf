@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Saurav's Books{% endblock %}
+{% block content %}
+
+<img class="coverimage" src="/static/covers/cover.jpg">
+
+<table class="booktable", height="300", width="300">
+
+  {% for key, value in book_dict.items() %}
+  <tr>
+    <td>{{ key }}:</td>
+    <td>{{ value }}</td>
+  </tr>
+  {% endfor %}
+
+      
+</table>
+
+{% endblock %}
