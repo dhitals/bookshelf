@@ -1,6 +1,7 @@
 from flask import render_template, jsonify, request, flash, redirect, url_for
 from flask_login import LoginManager, current_user, login_required
 from sqlalchemy import func
+from collections import OrderedDict
 
 from app import app
 from models import db, Book, NewBook
@@ -13,27 +14,27 @@ from .forms import LoginForm
 @app.route('/')
 @app.route('/library')
 def view_library():
-    res = Book.query.order_by(Book.Author_lastName, Book.Author_firstName, Book.Title).all()
+    res = Book.query.order_by(Book.Author_LastName, Book.Author_FirstName, Book.Title).all()
     return(render_template('table.html', books=res))
 
 @app.route('/library/by-title/')
 def view_byTitle():   
-    res = Book.query.order_by(Book.Title, Book.Author_lastName, Book.Author_firstName).all()
+    res = Book.query.order_by(Book.Title, Book.Author_LastName, Book.Author_FirstName).all()
     return(render_template('table.html', books=res))
 
 @app.route('/library/by-author/')
 def view_byAuthor():   
-    res = Book.query.order_by(Book.Author_lastName, Book.Author_firstName, Book.Title).all()
+    res = Book.query.order_by(Book.Author_LastName, Book.Author_FirstName, Book.Title).all()
     return(render_template('table.html', books=res))
 
 @app.route('/library/by-genre/')
 def view_byGenre():   
-    res = Book.query.order_by(Book.Genre, Book.Title, Book.Author_lastName, Book.Author_firstName).all()
+    res = Book.query.order_by(Book.Genre, Book.Title, Book.Author_LastName, Book.Author_FirstName).all()
     return(render_template('table.html', books=res))
 
 @app.route('/library/by-read/')
 def view_byRead():   
-    res = Book.query.order_by(Book.Read, Book.Title, Book.Author_lastName, Book.Author_firstName).all()
+    res = Book.query.order_by(Book.Read, Book.Title, Book.Author_LastName, Book.Author_FirstName).all()
     return(render_template('table.html', books=res, sort_on='Title'))
 
 #-------------------------------------------------------------------------
@@ -44,7 +45,7 @@ def view_eachBook(query):
     res = Book.query.filter( Book.ISBN == query ).first()
 
     # convert object to dictionary!
-    book_dict = dict((col, getattr(res, col)) for col in res.__table__.columns.keys())
+    book_dict = OrderedDict((col, getattr(res, col)) for col in res.__table__.columns.keys())
 
     return(render_template('book.html', book_dict=book_dict))
 
@@ -53,22 +54,22 @@ def view_eachBook(query):
 #-------------------------------------------------------------------------
 @app.route('/by-author/<query>')
 def searchByAuthor(query):
-    res = Book.query.filter( func.lower(Book.Author_lastName) == func.lower(query) ).order_by(Book.Author_firstName, Book.Title).all()
+    res = Book.query.filter( func.lower(Book.Author_LastName) == func.lower(query) ).order_by(Book.Author_FirstName, Book.Title).all()
     return(render_template('table.html', books=res))
 
 @app.route('/by-title/<query>')
 def searchByTitle(query):
-    res = Book.query.filter( func.lower(Book.Title) == func.lower(query) ).order_by(Book.Author_lastName, Book.Author_firstName,).all()
+    res = Book.query.filter( func.lower(Book.Title) == func.lower(query) ).order_by(Book.Author_LastName, Book.Author_FirstName,).all()
     return(render_template('table.html', books=res))
 
 @app.route('/by-genre/<query>')
 def searchByGenre(query):
-    res = Book.query.filter( func.lower(Book.Genre) == func.lower(query) ).order_by(Book.Author_lastName, Book.Author_firstName, Book.Title).all()
+    res = Book.query.filter( func.lower(Book.Genre) == func.lower(query) ).order_by(Book.Author_LastName, Book.Author_FirstName, Book.Title).all()
     return(render_template('table.html', books=res))
 
 @app.route('/by-read/<query>')
 def searchByRead(query):
-    res = Book.query.filter( func.lower(Book.Read) == func.lower(query) ).order_by(Book.Author_lastName, Book.Author_firstName, Book.Title).all()
+    res = Book.query.filter( func.lower(Book.Read) == func.lower(query) ).order_by(Book.Author_LastName, Book.Author_FirstName, Book.Title).all()
     return(render_template('table.html', books=res))
 
 #-------------------------------------------------------------------------
@@ -84,7 +85,7 @@ def register():
         db.session.add(book)
         db.session.commit()
         
-        flash('%s by %s Added' %(form.Title.data, form.Author_lastName.data))
+        flash('%s by %s Added' %(form.Title.data, form.Author_LastName.data))
         return(redirect(url_for('view_library')))
 
     return(render_template('register.html', form=form))

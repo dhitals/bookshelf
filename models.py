@@ -9,8 +9,8 @@ class Book(db.Model):
     
     ISBN = db.Column(db.Integer, primary_key=True)
     Title = db.Column(db.String(64), nullable=False) 
-    Author_lastName = db.Column(db.String(32), nullable=False)
-    Author_firstName = db.Column(db.String(32), nullable=True) 
+    Author_LastName = db.Column(db.String(32), nullable=False)
+    Author_FirstName = db.Column(db.String(32), nullable=True) 
     Original_Language = db.Column(db.String(32), nullable=True)
     Translator = db.Column(db.String(32), nullable=True)
     First_Published = db.Column(db.String(32), nullable=True)
@@ -26,7 +26,7 @@ class Book(db.Model):
     CoverImage = db.Column(db.String(64), nullable=True)
 
     def __repr__(self):
-        return('<Book - %s: %s - %s>' % (self.ISBN, self.Title, self.Author_lastName))
+        return('<Book - %s: %s - %s>' % (self.ISBN, self.Title, self.Author_LastName))
     
     def columns(self):
         """Return the actual columns of a SQLAlchemy-mapped object"""
@@ -36,8 +36,8 @@ class Book(db.Model):
 class NewBook(WTForm):
     ISBN = StringField('ISBN', [validators.Length(min=13, max=13, message='ISBN must be 13 digits long.')])
     Title = StringField('Title', [validators.Length(min=2)])
-    Author_lastName = StringField('Author Last Name', [validators.Length(min=2)])
-    Author_firstName = StringField('Author First Name', [validators.Length(min=1)]) 
+    Author_LastName = StringField('Author Last Name', [validators.Length(min=2)])
+    Author_FirstName = StringField('Author First Name', [validators.Length(min=1)]) 
     Original_Language = StringField('Original Language')
     Translator = StringField('Translator')
     First_Published = DateField('First Published', format='%y')
