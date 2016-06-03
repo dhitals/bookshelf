@@ -4,7 +4,7 @@ from sqlalchemy import func
 
 from app import app
 from models import db, Book, NewBook
-from schemas import ma, user_schema, book_schema, books_schema
+from schemas import ma, book_schema, books_schema
 from .forms import LoginForm
 
 #-------------------------------------------------------------------------
@@ -14,27 +14,39 @@ from .forms import LoginForm
 @app.route('/library')
 def view_library():
     res = Book.query.order_by(Book.Author_lastName, Book.Author_firstName, Book.Title).all()
-    return(render_template('eachBook.html', books=res))
+    return(render_template('table.html', books=res))
 
 @app.route('/library/by-title/')
 def view_byTitle():   
     res = Book.query.order_by(Book.Title, Book.Author_lastName, Book.Author_firstName).all()
-    return(render_template('eachBook.html', books=res))
+    return(render_template('table.html', books=res))
 
 @app.route('/library/by-author/')
 def view_byAuthor():   
     res = Book.query.order_by(Book.Author_lastName, Book.Author_firstName, Book.Title).all()
-    return(render_template('eachBook.html', books=res))
+    return(render_template('table.html', books=res))
 
 @app.route('/library/by-genre/')
 def view_byGenre():   
     res = Book.query.order_by(Book.Genre, Book.Title, Book.Author_lastName, Book.Author_firstName).all()
-    return(render_template('eachBook.html', books=res))
+    return(render_template('table.html', books=res))
 
 @app.route('/library/by-read/')
 def view_byRead():   
     res = Book.query.order_by(Book.Read, Book.Title, Book.Author_lastName, Book.Author_firstName).all()
-    return(render_template('eachBook.html', books=res, sort_on='Title'))
+    return(render_template('table.html', books=res, sort_on='Title'))
+
+#-------------------------------------------------------------------------
+# View each book
+#-------------------------------------------------------------------------
+@app.route('/library/view/<query>')
+def view_eachBook(query):
+    res = Book.query.filter( Book.ISBN == query ).first()
+
+    # convert object to dictionary!
+    book_dict = dict((col, getattr(res, col)) for col in res.__table__.columns.keys())
+
+    return(render_template('book.html', book_dict=book_dict))
 
 #-------------------------------------------------------------------------
 # Search by different fields
@@ -42,22 +54,22 @@ def view_byRead():
 @app.route('/by-author/<query>')
 def searchByAuthor(query):
     res = Book.query.filter( func.lower(Book.Author_lastName) == func.lower(query) ).order_by(Book.Author_firstName, Book.Title).all()
-    return(render_template('eachBook.html', books=res))
+    return(render_template('table.html', books=res))
 
 @app.route('/by-title/<query>')
 def searchByTitle(query):
     res = Book.query.filter( func.lower(Book.Title) == func.lower(query) ).order_by(Book.Author_lastName, Book.Author_firstName,).all()
-    return(render_template('eachBook.html', books=res))
+    return(render_template('table.html', books=res))
 
 @app.route('/by-genre/<query>')
 def searchByGenre(query):
     res = Book.query.filter( func.lower(Book.Genre) == func.lower(query) ).order_by(Book.Author_lastName, Book.Author_firstName, Book.Title).all()
-    return(render_template('eachBook.html', books=res))
+    return(render_template('table.html', books=res))
 
 @app.route('/by-read/<query>')
 def searchByRead(query):
     res = Book.query.filter( func.lower(Book.Read) == func.lower(query) ).order_by(Book.Author_lastName, Book.Author_firstName, Book.Title).all()
-    return(render_template('eachBook.html', books=res))
+    return(render_template('table.html', books=res))
 
 #-------------------------------------------------------------------------
 # Create / delete / edit entries
@@ -65,40 +77,18 @@ def searchByRead(query):
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = NewBook(request.form)
+    
     if request.method == 'POST' and form.validate():
-        book = Book(ISBN = form.ISBN.data,
-                    Title = form.Title.data,
-                    Author_lastName = form.Author_lastName.data)
-
+        book = book_schema.load(request.form)
+    
         db.session.add(book)
         db.session.commit()
-            
-        flash('%s by %s Added' %(form.Title.data, form.Author_lastName.data))
-        return redirect(url_for('view_library'))
         
+        flash('%s by %s Added' %(form.Title.data, form.Author_lastName.data))
+        return(redirect(url_for('view_library')))
+
     return(render_template('register.html', form=form))
 
-
-@app.route('/add', methods=['GET', 'POST'])
-def create_book():
-    
-    book, errors = book_schema.load(request.form)
-    if errors:
-        resp = jsonify(errors)
-        resp.status_code = 400
-        return(resp)
-
-    if request.method == 'POST' and form.validate():
-           book= Book()
-    
-    db.session.add(book)
-    db.session.commit()
-
-    flash('Book Added')
-    #resp = jsonify({"message": "Book Added"})
-    #resp.status_code = 201
-    #resp.headers["Location"] = book.url
-    return(resp)
 
 @app.route("/books/<isbn>", methods=["DELETE"])
 def delete_book(ISBN):

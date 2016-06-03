@@ -43,3 +43,17 @@ a:active  {color: green;}
 #menu li a:hover{ color:#00ffff; text-decoration:underline;}
 
 #menu li#currentpage { color:#00ffff; }
+
+.coverimage{ border-style: ridge;
+             border-width: 10px; 
+             padding: 0px;
+             height: 400px;
+             width: 250px;
+             margin: 10px 10px 10px 0px;
+             float: left; }
+.booktable{ border-style: none;
+            padding: 10px;
+            margin: 10px 10px 10px 0px;
+            height: 400px;
+            width: 250px;
+            float: left; }

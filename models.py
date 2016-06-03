@@ -1,7 +1,7 @@
 from app import db
 from sqlalchemy.orm import class_mapper, ColumnProperty
 from flask_login import UserMixin
-from wtforms import Form, BooleanField, StringField, validators
+from wtforms import Form as WTForm, BooleanField, DateField, SelectField, IntegerField, StringField, validators
 
 # create a Book subclass
 class Book(db.Model):
@@ -13,6 +13,7 @@ class Book(db.Model):
     Author_firstName = db.Column(db.String(32), nullable=True) 
     Original_Language = db.Column(db.String(32), nullable=True)
     Translator = db.Column(db.String(32), nullable=True)
+    First_Published = db.Column(db.String(32), nullable=True)
     Series = db.Column(db.String(32), nullable=True) 
     SeriesIndex = db.Column(db.SmallInteger, nullable=True) 
     Genre = db.Column(db.String(16), nullable=True) 
@@ -32,15 +33,29 @@ class Book(db.Model):
         return([prop.key for prop in class_mapper(self.__class__).iterate_properties
                 if isinstance(prop, ColumnProperty)])
 
+class NewBook(WTForm):
+    ISBN = StringField('ISBN', [validators.Length(min=13, max=13, message='ISBN must be 13 digits long.')])
+    Title = StringField('Title', [validators.Length(min=2)])
+    Author_lastName = StringField('Author Last Name', [validators.Length(min=2)])
+    Author_firstName = StringField('Author First Name', [validators.Length(min=1)]) 
+    Original_Language = StringField('Original Language')
+    Translator = StringField('Translator')
+    First_Published = DateField('First Published', format='%y')
+    Series = StringField('Series')
+    SeriesIndex = StringField('Series Index')
+    Genre = StringField('Genre')
+    Collection = StringField('Collection')
+    Format = SelectField('Format', choices=[(0, 'Paperback'), (1, 'Hardback'), (2, 'eBook'), (3, 'Audio Book')])
+    Read = SelectField('Read', choices=[(0, 'Read'), (1, 'Unread')])
+    Rating = IntegerField('Rating')
+    Status = SelectField('Status', choices=[(0, 'Owned'), (1, 'Borrowed'), (2,'Wanted'), (3, 'Lent Out')])
+    LentOutTo = StringField('Lent Out To')
+    CoverImage = StringField('Cover Image')
+
+    
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(64), nullable=True)
     password = db.Column(db.String(64), nullable=True)
     #api_key = db.Column(db.String(64), unique=True, index=True)
-
-class NewBook(Form):
-    ISBN = StringField('ISBN', [validators.Length(min=13, max=13, message='ISBN must be 13 digits long.')])
-    Title = StringField('Title', [validators.Length(min=2)])
-    Author_lastName = StringField('Author_lastName', [validators.Length(min=2)]) 
-

@@ -16,6 +16,7 @@ def db_importCSV(fname):
     df['LentOutTo']  = ''
     df['Original_Language'] = ''
     df['Translator'] = ''
+    df['First_Published'] = ''
     
     # split author Name into first, last names
     df['Author_firstName'] = df.Author.str.split(',').str[1]

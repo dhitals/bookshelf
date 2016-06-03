@@ -2,17 +2,7 @@ from flask_marshmallow import Marshmallow
 from models import User, Book
 
 ma = Marshmallow()
-
-
-class UserSchema(ma.Schema):
-    class Meta:
-        model = User
-        
-        fields = ('id', 'name')
-        
-user_schema = UserSchema()
-
-
+ 
 class BookSchema(ma.Schema):
     class Meta:
         model = Book
