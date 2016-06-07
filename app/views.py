@@ -2,11 +2,19 @@ from flask import render_template, jsonify, request, flash, redirect, url_for
 from flask_login import LoginManager, current_user, login_required
 from sqlalchemy import func
 from collections import OrderedDict
+import os
+import urllib.request
+from nameparser import HumanName
 
 from app import app
 from models import db, Book, NewBook
 from schemas import ma, book_schema, books_schema
 from .forms import LoginForm
+# goodreads imports
+from goodreads import client
+from apikey import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET
+from rauth.service import OAuth1Service, OAuth1Session
+
 
 #-------------------------------------------------------------------------
 # View entire library
@@ -99,6 +107,54 @@ def delete_book(ISBN):
     
     return jsonify({"message": "Book Deleted"})
 
+
+#-------------------------------------------------------------------------
+# Fetch metadata from Goodreads
+#-------------------------------------------------------------------------
+@app.route('/fetch/isbn=<isbn>', methods=['GET', 'POST'])
+def fetch_goodreads(isbn):
+    
+    session = OAuth1Session(
+        consumer_key = CONSUMER_KEY,
+        consumer_secret = CONSUMER_SECRET,
+        access_token = ACCESS_TOKEN,
+        access_token_secret = ACCESS_TOKEN_SECRET
+    )
+
+    gc = client.GoodreadsClient(session.consumer_key, session.consumer_secret)
+
+    gc.authenticate(session.access_token, session.access_token_secret)
+
+    if isbn:     
+        # grab the  GoodreadsBook instance
+        book = gc.book(isbn = '9780965496308')
+
+        # create a new book instance
+        res = Book()
+        
+        res.ISBN = isbn
+        res.Title = book._book_dict.get('title', 'None')
+
+        author = HumanName(book.authors[0].name)        
+        res.Author_LastName = author.last
+        res.Author_FirstName = ' '.join([author.first, author.middle])
+
+        path = 'app/static/'
+        fname = ''.join(['coverImages/', isbn, '.jpg'])
+
+        if not os.path.isfile( ''.join([path, fname]) ):
+            urllib.request.urlretrieve( book._book_dict.get('image_url'), ''.join([path, fname]) )
+        
+        res.CoverImage = fname
+        res.Original_Language = book._book_dict.get('language_code', '')
+    else:
+        raise GoodreadsClientException("book id or isbn required")
+
+    # convert object to dictionary!
+    book_dict = OrderedDict((col, getattr(res, col)) for col in res.__table__.columns.keys())
+
+    return(render_template('book.html', book_dict=book_dict))
+ 
 #-------------------------------------------------------------------------
 # Error Handlers
 #-------------------------------------------------------------------------
