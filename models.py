@@ -1,6 +1,6 @@
 from app import db
 from sqlalchemy.orm import class_mapper, ColumnProperty
-from flask_login import UserMixin
+#from flask_login import UserMixin
 from wtforms import Form as WTForm, BooleanField, DateField, SelectField, IntegerField, StringField, validators
 
 # create a Book subclass
@@ -9,11 +9,13 @@ class Book(db.Model):
     
     ISBN = db.Column(db.Integer, primary_key=True)
     Title = db.Column(db.String(64), nullable=False) 
-    Author_LastName = db.Column(db.String(32), nullable=False)
-    Author_FirstName = db.Column(db.String(32), nullable=True) 
-    Original_Language = db.Column(db.String(32), nullable=True)
+    Author = db.Column(db.String(32), nullable=False)
+    Author_lname = db.Column(db.String(32), nullable=False)
+    Author_fname = db.Column(db.String(32), nullable=False)
+    Language = db.Column(db.String(32), nullable=True)
     Translator = db.Column(db.String(32), nullable=True)
-    First_Published = db.Column(db.String(32), nullable=True)
+    Publisher = db.Column(db.String(32), nullable=True)
+    Publication_Year = db.Column(db.String(32), nullable=True)
     Series = db.Column(db.String(32), nullable=True) 
     SeriesIndex = db.Column(db.SmallInteger, nullable=True) 
     Genre = db.Column(db.String(16), nullable=True) 
@@ -22,8 +24,8 @@ class Book(db.Model):
     Read = db.Column(db.Boolean, nullable=True) 
     Rating = db.Column(db.Integer, nullable=True) 
     Status = db.Column(db.String(8), nullable=True)
-    LentOutTo = db.Column(db.String(8), nullable=True) 
-    CoverImage = db.Column(db.String(64), nullable=True)
+    Lent_to = db.Column(db.String(8), nullable=True) 
+    image_url = db.Column(db.String(64), nullable=True)
 
     def __repr__(self):
         return('<Book - %s: %s - %s>' % (self.ISBN, self.Title, self.Author_LastName))
@@ -36,26 +38,27 @@ class Book(db.Model):
 class NewBook(WTForm):
     ISBN = StringField('ISBN', [validators.Length(min=13, max=13, message='ISBN must be 13 digits long.')])
     Title = StringField('Title', [validators.Length(min=2)])
-    Author_LastName = StringField('Author Last Name', [validators.Length(min=2)])
-    Author_FirstName = StringField('Author First Name', [validators.Length(min=1)]) 
-    Original_Language = StringField('Original Language')
+    Author = StringField('Author', [validators.Length(min=2)])
+    Language = StringField('Original Language')
     Translator = StringField('Translator')
-    First_Published = DateField('First Published', format='%y')
+    Publisher = DateField('Publisher', format='%y')
+    Publication_Year = DateField('First Published', format='%y')
     Series = StringField('Series')
-    SeriesIndex = StringField('Series Index')
+    Series_Index = StringField('Series Index')
     Genre = StringField('Genre')
     Collection = StringField('Collection')
     Format = SelectField('Format', choices=[(0, 'Paperback'), (1, 'Hardback'), (2, 'eBook'), (3, 'Audio Book')])
     Read = SelectField('Read', choices=[(0, 'Read'), (1, 'Unread')])
     Rating = IntegerField('Rating')
     Status = SelectField('Status', choices=[(0, 'Owned'), (1, 'Borrowed'), (2,'Wanted'), (3, 'Lent Out')])
-    LentOutTo = StringField('Lent Out To')
-    CoverImage = StringField('Cover Image')
+    Lent_to = StringField('Lent Out To')
+    image_url = StringField('Cover Image')
 
-    
+"""
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(64), nullable=True)
     password = db.Column(db.String(64), nullable=True)
-    #api_key = db.Column(db.String(64), unique=True, index=True)
+    api_key = db.Column(db.String(64), unique=True, index=True)
+"""

@@ -12,17 +12,12 @@
       <th>Rating</th>
     </tr>
     
-    {% set sort_on = request.args.sort_on | default('Author_lastName') %}
+    {% set sort_on = request.args.sort_on | default('Author') %}
     {% for book in books %}
     <tr>
-      <td><a href="/library/view/{{ book.ISBN }}">
-        {{ book.Title }}</a></td>
-      <td><a href="/by-author/{{ book.Author_LastName }}">
-        {{ book.Author_FirstName }} <b>{{ book.Author_LastName }}</b></a>
-      </td>
-      <td><a href="/by-genre/{{ book.Genre }}">
-          {{ book.Genre }}</a>
-      </td>
+      <td><a href="/library/view/{{ book.ISBN }}">{{ book.Title }}</a></td>
+      <td><a href="/by-author/{{ book.Author }}"> {{ book.Author}}</a></td>
+      <td><a href="/by-genre/{{ book.Genre }}">   {{ book.Genre }}</a></td>
       <td>{{ book.Read }}</td>
       <td>{{ book.Rating }}</td>
     </tr>
