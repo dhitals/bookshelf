@@ -28,84 +28,10 @@ def view_library():
                                 Book.Title).all()
     return(render_template('table.html', books=books))
 
-@app.route('/library/by-title/')
-def view_byTitle():   
-    res = Book.query.order_by(Book.Title,
-                              Book.Author_lname,
-                              Book.Author_fname).all()
-    return(render_template('table.html', books=res))
-
-@app.route('/library/by-author/')
-def view_byAuthor():   
-    res = Book.query.order_by(Book.Author_lname,
-                              Book.Author_fname,
-                              Book.Title).all()
-    return(render_template('table.html', books=res))
-
-@app.route('/library/by-genre/')
-def view_byGenre():
-    res = Book.query.order_by(Book.Genre,
-                              Book.Author_lname,
-                              Book.Author_fname,
-                              Book.Title).all()
-    return(render_template('table.html', books=res))
-
-@app.route('/library/by-read/')
-def view_byRead():   
-    res = Book.query.order_by(Book.Read,
-                              Book.Author_lname,
-                              Book.Author_fname, 
-                              Book.Title).all()
-    return(render_template('table.html', books=res, sort_on='Title'))
-
-#-------------------------------------------------------------------------
-# View each book
-#-------------------------------------------------------------------------
-@app.route('/library/view/<query>')
-def view_eachBook(query):
-    book = Book.query.filter( Book.ISBN == query ).first()
-
-    # convert object to dictionary!
-    #book_dict = OrderedDict((col, getattr(res, col)) for col in res.__table__.columns.keys())
-
-    return(render_template('book.html', book=book))
-
-#-------------------------------------------------------------------------
-# Search by different fields
-#-------------------------------------------------------------------------
-@app.route('/by-author/<query>')
-def searchByAuthor(query):
-    res = Book.query.filter( func.lower(HumanName(Book.Author).last) == func.lower(query) ).order_by(HumanName(Book.Author).last,
-                                                                                    HumanName(Book.Author).first,
-                                                                                    Book.Title).all()    
-    return(render_template('table.html', books=res))
-
-@app.route('/by-title/<query>')
-def searchByTitle(query):
-    res = Book.query.filter( func.lower(Book.Title) == func.lower(query) ).order_by(HumanName(Book.Author).last,
-                                                                                    HumanName(Book.Author).first,
-                                                                                    Book.Title).all()
-    return(render_template('table.html', books=res))
-
-@app.route('/by-genre/<query>')
-def searchByGenre(query):
-    res = Book.query.filter(func.lower(Book.Genre) == func.lower(query)).order_by(HumanName(Book.Author).last,
-                                                                                    HumanName(Book.Author).first,
-                                                                                    Book.Title).all()
-    return(render_template('table.html', books=res))
-
-@app.route('/by-read/<query>')
-def searchByRead(query):
-    res = Book.query.filter(func.lower(Book.Read) == func.lower(query)).order_by(HumanName(Book.Author).last,
-                                                                                    HumanName(Book.Author).first,
-                                                                                    Book.Title).all()
-    return(render_template('table.html', books=res))
-
-@app.route('/<var>/sort')
+@app.route('/sort=<var>')
 def sortByVar(var):
     
-    if var == 'Author':
-        var = 'Author_lname'
+    if var == 'Author': var = 'Author_lname'
 
     # define sort order -- passed in var is the primary
     sort_order = np.array([var, 'Author_lname', 'Author_fname', 'Title'])
@@ -119,6 +45,41 @@ def sortByVar(var):
 
     return(render_template('table.html', books=res))
 
+#-------------------------------------------------------------------------
+# View each book
+#-------------------------------------------------------------------------
+@app.route('/library/isbn=<query>')
+def view_eachBook(query):
+    book = Book.query.filter( Book.ISBN == query ).first()
+
+    # convert object to dictionary!
+    #book_dict = OrderedDict((col, getattr(res, col)) for col in res.__table__.columns.keys())
+
+    return(render_template('book.html', book=book))
+
+#-------------------------------------------------------------------------
+# Search
+#-------------------------------------------------------------------------
+@app.route('/search')
+def searchByVar():
+
+    kwargs = request.args.to_dict()
+    
+    if 'Author' in kwargs:
+        kwargs['Author_lname'] = kwargs.pop('Author')
+        kwargs['Author_lname'] = HumanName(kwargs['Author_lname']).last
+    
+    # define sort order -- passed in var is the primary
+    sort_order = np.array(['Author_lname', 'Author_fname', 'Title'])
+    _, idx = np.unique(sort_order, return_index=True)
+    sort_order = sort_order[np.sort(idx)]
+
+    if np.size(sort_order) == 3: # when sorting by author or title
+        books = Book.query.filter_by(**kwargs).order_by(sort_order[0], sort_order[1], sort_order[2]).all()    
+    elif np.size(sort_order) == 4:
+        books = Book.query.filter_by(**kwargs).order_by(sort_order[0], sort_order[1], sort_order[2], sort_order[3]).all()    
+
+    return(render_template('table.html', books=books))
     
 #-------------------------------------------------------------------------
 # Create / delete / edit entries

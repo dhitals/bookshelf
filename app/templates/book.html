@@ -7,20 +7,19 @@
                               filename='coverImages/') }}{{ book.ISBN }}.jpg ">
   
   <table class="booktable">
-    <tr><td>Title</td>     <td>{{ book.Title }}</td></tr>
-    <tr><td>Author</td>    <td><a href="/by-author/{{ book.Author }}">{{ book.Author }}</a></td></tr>
-    <tr><td>ISBN</td>      <td>{{ book.ISBN }}</td></tr>
-    <tr><td>Genre</td>     <td><a href="/by-author/{{ book.Genre }}">{{ book.Genre }}</a></td></tr>
-    <tr><td>Read</td>      <td><a href="/by-author/{{ book.Read }}">{{ book.Read }}</a></td></tr>
-    <tr><td>Rating</td>    <td>{{ book.Rating }}</td></tr>
+    <tr><td>Title</td>     <td colspan="3">{{ book.Title }}</td></tr>
+    <tr><td>Author</td>    <td colspan="3"><a href="/by-author/{{ book.Author }}">{{ book.Author }}</a></td></tr>
+    <tr><td>ISBN</td>      <td  colspan="3">{{ book.ISBN }}</td></tr>
+    <tr><td>Genre</td>     <td colspan="3"><a href="/by-author/{{ book.Genre }}">{{ book.Genre }}</a></td></tr>
+    <tr><td>Read</td>      <td><a href="/by-author/{{ book.Read }}">{{ book.Read }}</a></td>
+        <td>Rating</td>    <td>{{ book.Rating }}</td></tr>
     <tr><td>Series</td>    <td><a href="/by-author/{{ book.Series }}">{{ book.Series }}</a></td>
-        <td>Series Index</td><td>{{ book.SeriesIndex }}</td></tr>
-    <tr><td>Publisher</td> <td>{{ book.Publisher }}</td></tr>
-    <tr><td>Collection</td><td><a href="/by-author/{{ book.Collection }}">{{ book.Collection }}</a></td></tr>
-    <tr><td>Format</td>    <td>{{ book.Format }}</td></tr>
+        <td>No.</td><td>{{ book.SeriesIndex }}</td></tr>
+    <tr><td>Publisher</td> <td colspan="3">{{ book.Publisher }}</td></tr>
+    <tr><td>Collection</td><td colspan="3"><a href="/by-author/{{ book.Collection }}">{{ book.Collection }}</a></td></tr>
+    <tr><td>Format</td>    <td colspan="3">{{ book.Format }}</td></tr>
     <tr><td>Status</td>    <td><a href="/by-author/{{ book.Status }}">{{ book.Status }}</a></td>
-      <td>Lent Out to</td><td>{{ book.Lent_to }}</td></tr>
-    <tr><td>Image</td>    <td>{{ book.image_url }}</td></tr>
+      <td>Lent to</td><td>{{ book.Lent_to }}</td></tr>
   </table>
 </div>
     

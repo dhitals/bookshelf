@@ -7,20 +7,22 @@
 <div class="libpage">
   <table class="libtable">
     <tr>
-      <th><a href="/Title/sort">Title</a></th>
-      <th><a href="/Author/sort">Author</a></th>
-      <th><a href="/Genre/sort">Genre</a></th>
-      <th><a href="/Read/sort">Read</a></th>
-      <th><a href="/Rating/sort">Rating</a></th>
-      <th><a href="/Collection/sort">Collection</a></th>
+      <th width="25%"><a href="/sort=Title">Title</a></th>
+      <th width="25%"><a href="/sort=Author">Author</a></th>
+      <th><a href="/sort=Genre">Genre</a></th>
+      <th><a href="/sort=Read">Read</a></th>
+      <th><a href="/sort=Rating">Rating</a></th>
+      <th><a href="/sort=Collection">Collection</a></th>
+      <th><a href="/sort=Language">Language</a></th>
     </tr>
     
     {% set sort_on = request.args.sort_on | default('Author') %}
     {% for book in books %}
     <tr  class="{{ loop.cycle('odd', 'even') }}">
-      <td ><a href="/library/view/{{ book.ISBN }}">{{ book.Title }}</a></td>
-      <td><a href="/by-author/{{ book.Author }}"> {{ book.Author}}</a></td>
-      <td><a href="/by-genre/{{ book.Genre }}">   {{ book.Genre }}</a></td>
+      <td><a href="/library/isbn={{ book.ISBN }}">{{ book.Title }}</a></td>
+      <td><a href="/search?Author={{ book.Author }}"> {{ book.Author}}</a></td>
+      <td><a href="/search?Genre={{ book.Genre }}">   {{ book.Genre}}</a></td>
+            <td><a href="/search?Language={{ book.Language }}">   {{ book.Language }}</a></td>
       <td>{{ book.Read }}</td>
       <td>{{ book.Rating }}</td>
       <td>{{ book.Collection }} </td>
