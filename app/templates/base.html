@@ -11,23 +11,36 @@
     {% endblock %}
   </head>
   <body>
-    <div class="dropdown">
+
+    <div class="navbar">
       <button class="dropbtn">Library</button>
       
-      <button class="dropbtn">Sort by</button>
-      <div class="dropdown-content">
-        <a href="/Title/sort">Title</a>
-        <a href="/Author/sort">Author</a>
-        <a href="/Genre/sort">Genre</a>
-        <a href="/Read/sort">Read</a>
-        <a href="/Collection/sort">Collection</a>
+      <div class="dropdown">
+        <button class="dropbtn">Sort by</button>
+        <div class="dropdown-content">
+          <a href="/sort=Title">Title</a>
+          <a href="/sort=Author">Author</a>
+          <a href="/sort=Genre">Genre</a>
+          <a href="/sort=Read">Read</a>
+          <a href="/sort=Collection">Collection</a>
+        </div>
       </div>
 
-      <button class="dropbtn">List</button>
+      <div class="dropdown">
+        <button class="dropbtn">List</button>
+        <div class="dropdown-content">
+          <a href="/list=Author">Author</a>
+          <a href="/list=Genre">Genre</a>
+          <a href="/list=Read">Read</a>
+          <a href="/list=Collection">Collection</a>
+        </div>
+      </div>
+      
       <button class="dropbtn">Search by</button>
-      <button class="dropbtn">New Book</button>
-    </div>
 
+      <button class="roundbtn">New Book</button>
+    </div>
+    
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <ul>
