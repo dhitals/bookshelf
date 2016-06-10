@@ -3,6 +3,7 @@ from flask_login import LoginManager, current_user, login_required
 from sqlalchemy import func
 from collections import OrderedDict
 import os
+import numpy as np
 import urllib.request
 from nameparser import HumanName
 
@@ -100,6 +101,25 @@ def searchByRead(query):
                                                                                     Book.Title).all()
     return(render_template('table.html', books=res))
 
+@app.route('/<var>/sort')
+def sortByVar(var):
+    
+    if var == 'Author':
+        var = 'Author_lname'
+
+    # define sort order -- passed in var is the primary
+    sort_order = np.array([var, 'Author_lname', 'Author_fname', 'Title'])
+    _, idx = np.unique(sort_order, return_index=True)
+    sort_order = sort_order[np.sort(idx)]
+
+    if np.size(sort_order) == 3: # when sorting by author or title
+        res = Book.query.order_by(sort_order[0], sort_order[1], sort_order[2]).all()    
+    elif np.size(sort_order) == 4:
+        res = Book.query.order_by(sort_order[0], sort_order[1], sort_order[2], sort_order[3]).all()    
+
+    return(render_template('table.html', books=res))
+
+    
 #-------------------------------------------------------------------------
 # Create / delete / edit entries
 #-------------------------------------------------------------------------
@@ -150,8 +170,8 @@ def fetch_goodreads(isbn):
         book = gc.book(isbn = isbn)
 
         # diwnload cover image if it does not exist
-        path = 'app/static/'
-        fname = ''.join(['coverImages/', isbn, '.jpg'])
+        path = 'app/static/coverImages/'
+        fname = ''.join([isbn, '.jpg'])
         if not os.path.isfile( ''.join([path, fname]) ):
             urllib.request.urlretrieve( book._book_dict.get('image_url', ''), ''.join([path, fname]) )
 

@@ -1,25 +1,29 @@
 {% extends "base.html" %}
+{% set active_page = "library1" %}
+
 {% block title %}Saurav's Books{% endblock %}
 {% block content %}
 
 <div class="libpage">
   <table class="libtable">
     <tr>
-      <th>Title</th>
-      <th>Author</th>
-      <th>Genre</th>
-      <th>Read</th>
-      <th>Rating</th>
+      <th><a href="/Title/sort">Title</a></th>
+      <th><a href="/Author/sort">Author</a></th>
+      <th><a href="/Genre/sort">Genre</a></th>
+      <th><a href="/Read/sort">Read</a></th>
+      <th><a href="/Rating/sort">Rating</a></th>
+      <th><a href="/Collection/sort">Collection</a></th>
     </tr>
     
     {% set sort_on = request.args.sort_on | default('Author') %}
     {% for book in books %}
-    <tr>
-      <td><a href="/library/view/{{ book.ISBN }}">{{ book.Title }}</a></td>
+    <tr  class="{{ loop.cycle('odd', 'even') }}">
+      <td ><a href="/library/view/{{ book.ISBN }}">{{ book.Title }}</a></td>
       <td><a href="/by-author/{{ book.Author }}"> {{ book.Author}}</a></td>
       <td><a href="/by-genre/{{ book.Genre }}">   {{ book.Genre }}</a></td>
       <td>{{ book.Read }}</td>
       <td>{{ book.Rating }}</td>
+      <td>{{ book.Collection }} </td>
     </tr>
     {% endfor %}
   </table>

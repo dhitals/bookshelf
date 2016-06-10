@@ -1,7 +1,10 @@
-Flask == 0.10.1
+Flask == 0.11
 Flask_Login == 0.3.2
 flask_marshmallow == 0.6.2
+goodreads == 0.2.4
+nameparser == 0.4.0
 pandas == 0.18.1
-SQLAlchemy == 1.0.12
+rauth == 0.7.2
+SQLAlchemy == 1.0.13
 WTForms == 2.1
 sqlalchemy_migrate == 0.10.0

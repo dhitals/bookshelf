@@ -3,7 +3,8 @@
 {% block content %}
 
 <div class="bookpage">
-  <img class="bookimage" src="{{ url_for('static', filename='coverImages/default.jpg') }}" />
+  <img class="bookimage" src="{{ url_for('static',
+                              filename='coverImages/') }}{{ book.ISBN }}.jpg ">
   
   <table class="booktable">
     <tr><td>Title</td>     <td>{{ book.Title }}</td></tr>
@@ -18,8 +19,10 @@
     <tr><td>Collection</td><td><a href="/by-author/{{ book.Collection }}">{{ book.Collection }}</a></td></tr>
     <tr><td>Format</td>    <td>{{ book.Format }}</td></tr>
     <tr><td>Status</td>    <td><a href="/by-author/{{ book.Status }}">{{ book.Status }}</a></td>
-        <td>Lent Out to</td><td>{{ book.Lent_to }}</td></tr>
+      <td>Lent Out to</td><td>{{ book.Lent_to }}</td></tr>
+    <tr><td>Image</td>    <td>{{ book.image_url }}</td></tr>
   </table>
 </div>
     
 {% endblock %}
+http://127.0.0.1:5000/static/coverImages/9780141439808.jpg
