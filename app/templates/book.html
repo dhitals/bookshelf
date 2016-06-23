@@ -3,8 +3,8 @@
 {% block content %}
 
 <div class="bookpage">
-  <img class="bookimage" src="{{ url_for('static',
-                              filename='coverImages/') }}{{ book.ISBN }}.jpg ">
+  <img class="bookimage" height="400", width="250"
+       src="{{ url_for('static', filename='coverImages/') }}{{ book.ISBN }}.jpg ">
   
   <table class="booktable">
     <tr><td>Title</td>     <td colspan="3">{{ book.Title }}</td></tr>

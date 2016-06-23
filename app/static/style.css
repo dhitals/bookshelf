@@ -26,7 +26,7 @@ td              { border: 2px solid #ccc; padding: 0.5em 1.5em; }
                   height: 400px; width: 450px;}
 
 .bookimage      { float: left; padding: 0; margin: 0;
-                  height: 400px; width: 250px; }                       
+                  max-height: 400px; max-width: 250px; }                       
 
 .entries        { list-style: none; margin: 0; padding: 0; }
 .entries li     { margin: 0.8em 1.2em; }
