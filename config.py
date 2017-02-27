@@ -7,4 +7,4 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 # web forms
 WTF_CSRF_ENABLED = True
-SECRET_KEY = 'saurav'
+SECRET_KEY = 'saurav' 

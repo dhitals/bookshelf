@@ -7,8 +7,9 @@ import numpy as np
 import urllib.request
 from nameparser import HumanName
 
-from app import app
-from models import db, Book, NewBook
+from app import app, db
+from models import Book, NewBook
+
 from schemas import ma, book_schema, books_schema
 from .forms import LoginForm
 # goodreads imports
@@ -100,9 +101,10 @@ def register():
     return(render_template('register.html', form=form))
 
 
-@app.route("/books/<isbn>", methods=["DELETE"])
-def delete_book(ISBN):
-    res = Book.query.get_or_404(ISBN)
+@app.route("/delete", methods=["DELETE"])
+def delete(isbn):
+    res = Book.query.get_or_404(isbn)
+    
     db.session.delete(res)
     db.session.commit()
     
@@ -112,7 +114,7 @@ def delete_book(ISBN):
 #-------------------------------------------------------------------------
 # Fetch metadata from Goodreads
 #-------------------------------------------------------------------------
-@app.route('/fetch/isbn=<isbn>', methods=['GET', 'POST'])
+@app.route('/fetch?isbn=<isbn>', methods=['GET', 'POST'])
 def fetch_goodreads(isbn):
     
     session = OAuth1Session(

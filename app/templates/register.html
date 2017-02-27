@@ -1,15 +1,77 @@
 {% extends "base.html" %}
 {% block title %}Add Book{% endblock %}
+
 {% block content %}
 
-{% from "_formhelpers.html" import render_field %}
-<form method=post action="/register">
-  <dl>
-    {% for field in form %}
-    {{ render_field(field) }}
-    {% endfor %}
-  </dl>
-  <p><input type=submit value='Add to Library'>
-</form>
+<h2>Add a New Book</h2>
+
+<div class="bookpage">
+  
+  <table class="formimage" height="360">
+    <tr><td colspan="2">
+    <img class="formimage"
+         src="{{ url_for('static', filename='coverImages/default.jpg') }}">
+    </td></tr>
+    <tr>
+      <td><input type="submit" name="fetchCOver" value="Fetch Cover Image"></td>
+      <td><input type="submit" name="add" value="Add to Library"></td>
+    </tr>
+  </table>
+
+  <form action="{{url_for('register')}}" method="POST">
+    <table class="form">
+      <tr>
+        <td>{{ form.ISBN.label }}</td>
+        <td>{{ form.ISBN }}</td>
+        <td><p><input type="submit" name="searchISBN" value="Search by ISBN"></p></td>
+      </tr>
+      <tr>
+        <td>{{ form.Title.label }}</td>
+        <td>{{ form.Title }}</td>
+        <td><p><input type="submit" name="searchTitle" value="Search by Title"></p></td>
+      </tr>
+      <tr>
+        <td>{{ form.Author.label }}</td>
+        <td>{{ form.Author }}</td>
+        <td><p><input type="submit" name="searchAuthor" value="Search by Author"></p></td>
+      </tr>
+      <tr>
+        <td>{{ form.Genre.label }}</td>
+        <td>{{ form.Genre }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.Read.label }}</td>
+        <td>{{ form.Read }}</td>
+        <td>{{ form.Rating.label }}</td>
+        <td>{{ form.Rating }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.Series.label }}</td>
+        <td>{{ form.Series }}</td>
+        <td>{{ form.Series_Index.label }}</td>
+        <td>{{ form.Series_Index }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.Publisher.label }}</td>
+        <td>{{ form.Publisher }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.Collection.label }}</td>
+        <td>{{ form.Collection }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.Format.label }}</td>
+        <td>{{ form.Format }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.Status.label }}</td>
+        <td>{{ form.Status }}</td>
+        <td>{{ form.Lent_to.label }}</td>
+        <td>{{ form.Lent_to }}</td>
+      </tr>
+    </table>
+  </form>
+      
+</div>
 
 {% endblock %}

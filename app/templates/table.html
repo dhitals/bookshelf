@@ -18,7 +18,7 @@
     
     {% set sort_on = request.args.sort_on | default('Author') %}
     {% for book in books %}
-    <tr  class="{{ loop.cycle('odd', 'even') }}">
+    <tr class="{{ loop.cycle('odd', 'even') }}">
       <td><a href="/library/isbn={{ book.ISBN }}">{{ book.Title }}</a></td>
       <td><a href="/search?Author={{ book.Author }}"> {{ book.Author}}</a></td>
       <td><a href="/search?Genre={{ book.Genre }}">   {{ book.Genre}}</a></td>
